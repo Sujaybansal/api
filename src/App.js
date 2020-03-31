@@ -1,26 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class UserProfiles extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      name: {title: '', first: '', last: ''},
+      image: ''
+    };
+
+    this.getUser = this.getUser.bind(this);
+  }
+
+
+
+
+  componentWillMount() {
+    this.getUser();
+  }
+
+
+
+
+
+  getUser() {
+    fetch('https://randomuser.me/api/')    // can use any onlinr data
+    .then(response => {
+      if(response.ok) return response.json();
+      throw new Error('Request failed.');
+    })
+    .then(data => {
+      this.setState({name: data.results[0].name,
+        image: data.results[0].picture.medium});
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
+
+
+
+
+  render() {
+    return (
+	<div className = "App">
+          <h1>{`${this.state.name.title} ${this.state.name.first} ${this.state.name.last}`}</h1>
+
+          <img alt='Profile' src = {this.state.image}></img><br/>
+          
+          <button onClick={this.getUser}>Get new user.</button>
+	</div>
+    );
+  }
 }
 
-export default App;
+export default UserProfiles;
